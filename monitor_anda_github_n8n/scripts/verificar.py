@@ -80,13 +80,16 @@ def run():
             "Estado anterior preservado."
         )
 
-    # 4. Detetar mensagem de esgotamento
+    # 4. Detetar mensagens de vouchers esgotados
     exhausted = bool(re.search(
-        r"vouchers?\s+(?:ja\s+)?"
-        r"(?:esgotaram|esgotad[oa]s?)"
-        r"|sem\s+vouchers?\s+disponiveis",
+        r"(?:"
+        r"\bvouchers?\s+(?:ja\s+)?(?:esgotaram|esgotad[oa]s?)\b"
+        r"|\b(?:ja\s+)?esgotamos\s+(?:os\s+)?[\d.\s]*vouchers?\b"
+        r"|\bsem\s+vouchers?\s+disponiveis\b"
+        r")",
         raw
     ))
+
 
     current = (
         "esgotado"
