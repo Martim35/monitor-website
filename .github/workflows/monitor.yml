@@ -1,19 +1,10 @@
 
 name: Monitor ANDA
 
-
 on:
   workflow_dispatch:
-    inputs:
-      simular_reabertura:
-        description: 'Simular reposição e enviar aviso ao Slack'
-        required: false
-        default: false
-        type: boolean
-
   schedule:
     - cron: '2-59/5 * * * *'
-
 
 permissions:
   contents: write
@@ -36,13 +27,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      
       - name: Verificar vouchers
         env:
           N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
-          SIMULAR_REABERTURA: ${{ inputs.simular_reabertura && '1' || '0' }}
         run: python monitor_anda_github_n8n/scripts/verificar.py
-
 
       - name: Guardar estado
         run: |
@@ -52,4 +40,6 @@ jobs:
             git add estado.json
             git commit -m "Atualizar estado ANDA [skip ci]"
             git push
+          else
+            echo "Estado sem alterações."
           fi
