@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 
-URL = "https://andaconhecerportugal.pt/"
+URL = "https://n8n.srv965270.hstgr.cloud/form/teste-andaconhecerportugal"
 STATE = Path("estado.json")
 
 
