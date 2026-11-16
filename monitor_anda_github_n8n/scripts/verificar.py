@@ -32,7 +32,12 @@ def run():
     raw = re.sub(r"\s+", " ", raw)
     if len(raw) < 150 or "anda" not in raw or "voucher" not in raw:
         raise RuntimeError("Pagina inesperada; estado preservado")
-    exhausted = bool(re.search(r"(?:ultimos\s+10[.\s]?000\\s+vouchers\s+ja\s+esgotaram|vouchers?\s+(?:ja\s+)?esgotad[oa]s?|sem\s+vouchers?\s+disponiveis)", raw))
+    
+    exhausted = bool(re.search(
+        r"vouchers?\s+(?:ja\s+)?(?:esgotaram|esgotad[oa]s?)|sem\s+vouchers?\s+disponiveis",
+        raw
+    ))
+
     current = "esgotado" if exhausted else "possivel_reabertura"
     previous = json.loads(STATE.read_text())["estado"] if STATE.exists() else None
     print(f"Estado anterior: {previous}; atual: {current}")
