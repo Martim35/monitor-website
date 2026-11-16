@@ -40,6 +40,17 @@ def run():
 
     current = "esgotado" if exhausted else "possivel_reabertura"
     previous = json.loads(STATE.read_text())["estado"] if STATE.exists() else None
+
+    
+    teste = os.environ.get("SIMULAR_REABERTURA") == "1"
+
+    if teste:
+        if previous != "esgotado":
+            raise RuntimeError("O teste requer estado anterior esgotado")
+        current = "possivel_reabertura"
+        print("MODO TESTE: a simular reposição de vouchers")
+
+    
     print(f"Estado anterior: {previous}; atual: {current}")
     if previous == "esgotado" and current == "possivel_reabertura":
         url = os.environ.get("N8N_WEBHOOK_URL")
@@ -51,7 +62,7 @@ def run():
             if not 200 <= resp.status < 300:
                 raise RuntimeError(f"Webhook HTTP {resp.status}")
         print("Notificacao enviada")
-    if previous != current:
+    if previous != current and not teste:
         STATE.write_text(json.dumps({"estado":current,"atualizado_em":datetime.now(timezone.utc).isoformat()},indent=2)+"\n")
         print("Estado alterado")
 if __name__ == "__main__":
